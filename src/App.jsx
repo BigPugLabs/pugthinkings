@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from "./components/Sidebar"
 import Editor from "./components/Editor"
 //import { data } from "./data"
@@ -12,25 +12,21 @@ function App() {
         (notes[0] && notes[0].id) || ""
     )
 
+    useEffect(() => {
+        localStorage.setItem("notes", JSON.stringify(notes))
+    }, [notes])
+
     function createNewNote() {
         const newNote = {
             id: nanoid(),
             body: "# Type your markdown note's title here"
         }
-        setNotes(prevNotes => {
-            const updatedNotes = [newNote, ...prevNotes]
-            localStorage.setItem("notes", JSON.stringify(updatedNotes))
-            return updatedNotes
-        })
+        setNotes(prevNotes => [newNote, ...prevNotes])
         setCurrentNoteId(newNote.id)
     }
 
     function updateNote(text) {
-        setNotes(oldNotes => {
-            const updatedNotes = oldNotes.map(oldNote => oldNote.id === currentNoteId ? { ...oldNote, body: text } : oldNote)
-            localStorage.setItem("notes", JSON.stringify(updatedNotes))
-            return updatedNotes
-        })
+        setNotes(oldNotes => oldNotes.map(oldNote => oldNote.id === currentNoteId ? { ...oldNote, body: text } : oldNote))
     }
 
     function findCurrentNote() {
