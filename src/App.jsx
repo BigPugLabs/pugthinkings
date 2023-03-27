@@ -7,7 +7,7 @@ import { nanoid } from "nanoid"
 
 function App() {
 
-    const [notes, setNotes] = useState([])
+    const [notes, setNotes] = useState(JSON.parse(localStorage.getItem("notes")) || [])
     const [currentNoteId, setCurrentNoteId] = useState(
         (notes[0] && notes[0].id) || ""
     )
@@ -17,16 +17,20 @@ function App() {
             id: nanoid(),
             body: "# Type your markdown note's title here"
         }
-        setNotes(prevNotes => [newNote, ...prevNotes])
+        setNotes(prevNotes => {
+            const updatedNotes = [newNote, ...prevNotes]
+            localStorage.setItem("notes", JSON.stringify(updatedNotes))
+            return updatedNotes
+        })
         setCurrentNoteId(newNote.id)
     }
 
     function updateNote(text) {
-        setNotes(oldNotes => oldNotes.map(oldNote => {
-            return oldNote.id === currentNoteId
-                ? { ...oldNote, body: text }
-                : oldNote
-        }))
+        setNotes(oldNotes => {
+            const updatedNotes = oldNotes.map(oldNote => oldNote.id === currentNoteId ? { ...oldNote, body: text } : oldNote)
+            localStorage.setItem("notes", JSON.stringify(updatedNotes))
+            return updatedNotes
+        })
     }
 
     function findCurrentNote() {
