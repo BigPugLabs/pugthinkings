@@ -7,7 +7,7 @@ import { nanoid } from "nanoid"
 
 function App() {
 
-    const [notes, setNotes] = useState(()=>JSON.parse(localStorage.getItem("notes")) || [])
+    const [notes, setNotes] = useState(() => JSON.parse(localStorage.getItem("notes")) || [])
     const [currentNoteId, setCurrentNoteId] = useState(
         (notes[0] && notes[0].id) || ""
     )
@@ -26,8 +26,15 @@ function App() {
     }
 
     function updateNote(text) {
-        setNotes(oldNotes => oldNotes.map(oldNote => oldNote.id === currentNoteId ? { ...oldNote, body: text } : oldNote))
-    }
+        setNotes(oldNotes => {
+            if (currentNoteId != oldNotes[0].id) {
+                const index = oldNotes.findIndex(note => note.id == currentNoteId, 1)
+                const liveNote = { ...oldNotes[index], body: text }
+                return [liveNote, ...oldNotes.filter(e=>e.id!=currentNoteId)]
+            }
+            return oldNotes.map(oldNote => oldNote.id === currentNoteId ? { ...oldNote, body: text } : oldNote)
+        })
+}
 
     function findCurrentNote() {
         return notes.find(note => {
