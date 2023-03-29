@@ -30,11 +30,16 @@ function App() {
             if (currentNoteId != oldNotes[0].id) {
                 const index = oldNotes.findIndex(note => note.id == currentNoteId, 1)
                 const liveNote = { ...oldNotes[index], body: text }
-                return [liveNote, ...oldNotes.filter(e=>e.id!=currentNoteId)]
+                return [liveNote, ...oldNotes.filter(e => e.id != currentNoteId)]
             }
             return oldNotes.map(oldNote => oldNote.id === currentNoteId ? { ...oldNote, body: text } : oldNote)
         })
-}
+    }
+
+    function deleteNote(event, noteId) {
+        event.stopPropagation()
+        setNotes(prev => prev.filter(note => note.id != noteId))
+    }
 
     function findCurrentNote() {
         return notes.find(note => {
@@ -56,6 +61,7 @@ function App() {
                             notes={notes}
                             currentNote={findCurrentNote()}
                             setCurrentNoteId={setCurrentNoteId}
+                            deleteNote={deleteNote}
                             newNote={createNewNote}
                         />
                         {

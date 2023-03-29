@@ -13,6 +13,12 @@ export default function Sidebar(props) {
                     onClick={() => props.setCurrentNoteId(note.id)}
                 >
                     <h4 className="text-snippet">{note.body.slice(0, endOfFirstLine).replace(/[*~#]/g, "").trim() || "Note " + (index + 1)}</h4>
+                    <button
+                        className="delete-btn"
+                        onClick={event => props.deleteNote(event, note.id)}
+                    >
+                        <i className="gg-trash trash-icon"></i>
+                    </button>
                 </div>
             </div>
         )
